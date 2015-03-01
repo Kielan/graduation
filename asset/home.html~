@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+
+<body>
+  <div class="container body-content">
+    <div class="jumbotron" style="text-align:center">
+      <h1 class="logo">{{title}}</h1>
+
+      <p class="lead">Your favorite place to &lt;3 Kendamas</p>
+
+      <p></p>
+
+      <form action="/" class="form-group form-inline" method="post">
+        <div class="form-group">
+          <input autocomplete="off" class="form-control input-lg" id="search"
+          name="search" placeholder="Search..." type="text" ng-model="searchTags">
+        </div>
+
+        <div class="form-group">
+          <button class="btn btn-lg btn-primary" data-loading-text=
+          "Searching..." type="submit">Search</button>
+        </div>
+      </form>
+    </div>
+  </div><!-- end of jumbotron -->
+  <div class="container">
+
+ 
+	<div class="col-md-4" style="position:relative;padding-right:25px;" ng-repeat="ken in kendamas | filter:searchTags">
+        <div class="thumbnail" style="left: 0px; top: 0px;">
+          <img ng-src="{{ken.img}}" ng-style="{ 'width': ken.size, 'height': ken.size }">
+
+
+          <div class="caption">
+            <h3><i class="fa fa-google-plus-square"></i> {{ken.title}}</h3>
+
+            <p>{{ken.tags}}</p><small data-value="11/25/2014 10:29:40 AM">uploaded about
+            # minutes ago</small> <i class=
+            "fa fa-google-plus-square fa-3x pull-right" style=
+            "position:relative;bottom:13px;"></i>
+          </div>
+        </div>
+      </div>
+    </div>

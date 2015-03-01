@@ -1,0 +1,27 @@
+<div class="media shot_header">
+  <div class="pull-left">
+    <img class="media-object" >
+  </div>
+  <div class="media-body">
+    <div class="thumbnail" style="left: 0px; top: 0px;">
+    <form>
+      <div class="form-group">
+
+      </div>
+           <div id="dropBox" class="alert" flow-drop flow-drag-enter="class='alert-success'" flow-drag-leave="class=''"
+          ng-class="class">
+<img flow-img="$flow.files[0]" />
+	   </div>
+	   <div class="caption">
+	    <div class="form-group">
+	    <label for="exampleInputEmail1"></label>
+	    <input type="text" ng-model="newKen.title" class="form-control" id="exampleInputEmail1" placeholder="Enter Title">
+	    <p></p>
+	<label for="exampleInputEmail1"></label>
+	<input type="text" ng-model="newKen.tags" class="form-control" id="exampleInputEmail1" placeholder="Enter Tags">
+	    </div>
+	    <input type="submit" name="mysubmit" ng-click="Kenbasket.addItem(newItem); newKen = {}" value="Click!" />
+    </form>
+    </div>
+     </div>
+</div>
