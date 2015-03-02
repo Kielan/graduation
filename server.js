@@ -2,65 +2,22 @@
 //module dependencies
 var express = require('express');
 var exphbs = require('express-handlebars');
+var crypto = require('crypto');
 var path = require('path');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var multipart = require('connect-multiparty');
-var crypto = require('crypto');
+var routes = require('./asset/routes/routes.js');
 var app = express();
 
-var multipartMiddleware = multipart();
 
+
+
+mongoose.set('debug', true);
 mongoose.connect('mongodb://localhost/thegraduate');
 
-var graduateUserSchema = mongoose.Schema({
-    _id: {
-        type: String,
-        lowercase: true,
-        trim: true
-    },
-    name: {
-        first: String,
-        last: String
-    },
-    username: {
-        type: String,
-        required: true
-    },
-    salt: {
-        type: String,
-        required: true
-    },
-    hash: {
-        type: String,
-        required: true
-    },
-    created: {
-        type: Date,
-        default: Date.now
-    }
-});
 
-var favBookSchema = mongoose.Schema({
-    title: {
-        type: String,
-        lowercase: true,
-        trim: true,
-        required: true
-    },
-    author: {
-        first: String,
-        last: String,
-        //   required: true
-    },
-    quote: {
-        type: String,
-        required: true,
-        lowercase: true
-    }
-});
 
 // view engine setup
 app.engine('.hbs', exphbs({
@@ -92,107 +49,9 @@ app.use(function(req, res, next) {
 
 app.use(express.static(path.join(__dirname, 'asset')));
 
-var User = mongoose.model('User', graduateUserSchema);
-
-mongoose.model('Book', favBookSchema);
 
 //routes
-app.get('/', function(req, res) {
-    res.render('index', {
-        title: 'GraduateLogin'
-    });
-})
-
-//create new account
-app.post('/api/signup', multipartMiddleware, function(req, res) {
-    console.log('hitsignup route');
-    console.log(req.body);
-    var email = req.body.email;
-    var username = req.body.username;
-    var password = req.body.password;
-
-
-    if (!(email && password)) {
-	console.log('what');
-        return invalid();
-    }
-
-    User.findById(email, function(err, user) {
-        if (err) return next(err);
-
-        if (user) {
-            return res.render('signup.jade', {
-                exists: true
-            });
-        }
-
-        crypto.randomBytes(16, function(err, bytes) {
-            if (err) return next(err);
-
-            var user = {
-                _id: email,
-		email: email,
-		username: username,
-		password: password
-            };
-	    
-            user.salt = bytes.toString('utf8');
-            user.hash = hash(password, user.salt);
-
-            User.create(user, function(err, newUser) {
-                if (err) {
-                    if (err instanceof mongoose.Error.ValidationError) {
-			console.log(err);
-                        return invalid();	
-                    }
-                    return next(err);
-                }
-
-                // user created successfully
-                req.session.isLoggedIn = true;
-                req.session.user = email;
-                console.log('created user: %s', email);
-                return res.redirect('/');
-            })
-        })
-    })
-});
-
-app.get('/signup', function(req, res) {
-
-})
-
-app.post('/login', function(req, res) {
-    //validate
-    var email = req.param('email');
-    var password = req.param('password');
-
-    if (!(email && password)) {
-        return invalid();
-    }
-
-    email = email.toLowerCase();
-
-    // query mongodb
-    User.findById(email, function(err, user) {
-        if (err) return next(err);
-
-        if (!user) {
-            return invalid();
-        }
-
-        // validate password
-        if (user.hash != hash(pass, user.salt)) {
-            return invalid();
-        }
-
-        req.session.isLoggedIn = true;
-        req.session.user = email;
-        res.redirect('/');
-    })
-})
-
-
+routes(app);
 
 
 var server = app.listen(3000, function() {
@@ -203,13 +62,3 @@ var server = app.listen(3000, function() {
 })
 
 
-function invalid() {
-    console.log('not valid dude');
-}
-
-function hash(password, salt) {
-    var hash = crypto.createHash('sha512');
-    hash.update(password, 'utf8');
-    hash.update(salt, 'utf8');
-    return hash.digest('base64');
-}

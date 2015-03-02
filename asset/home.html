@@ -6,31 +6,30 @@
 
 <body>
   <div class="container body-content">
-    <div class="jumbotron" style="text-align:center">
+    <div class="jumbotron" style="text-align:center" ng-controller="BookCtrl">
       <h1 class="logo">{{title}}</h1>
 
-      <p class="lead">Sometimes there are no catchy taglines create a facorite quote</p>
+      <p class="lead">Sometimes there are no catchy taglines create a favorite quote</p>
 
       <p></p>
 
       <form action="/" method="post">
         <div class="form-group">
           <input autocomplete="off" class="form-control input-lg" id="title"
-          name="search" placeholder="Title" type="text" ng-model="searchTags">
+          name="search" placeholder="Title" type="text" ng-model="book.title">
         </div>
 
         <div class="form-group">
           <input autocomplete="off" class="form-control input-lg" id="author"
-          name="search" placeholder="Author" type="text" ng-model="searchTags">
+          name="search" placeholder="Author" type="text" ng-model="book.author">
         </div>
 
 	        <div class="form-group">
-         <textarea class="form-control" rows="3" placeholder="favorite quote"></textarea>
+         <textarea class="form-control" rows="3" placeholder="favorite quote" ng-model="book.quote"></textarea>
         </div>
 	
         <div class="form-group">
-          <button class="btn btn-lg btn-primary" data-loading-text=
-          "Searching..." type="submit">Search</button>
+	  <input type="submit" ng-click="NewObject(book)" value="Create" class="btn btn-success"/>
         </div>
       </form>
     </div>
