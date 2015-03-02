@@ -4,6 +4,7 @@
 var express = require('express');
 var exphbs = require('express-handlebars');
 var path = require('path');
+var morgan = require('morgan'); 
 var mongoose = require('mongoose');
 var session = require('express-session');
 var bodyParser = require('body-parser');
@@ -61,6 +62,36 @@ var favBookSchema = mongoose.Schema({
   }
 });
 
+// view engine setup
+app.engine('.hbs', exphbs({
+  extname: '.hbs'
+}));
+app.set('view engine', '.hbs');
+app.set('views', path.join(__dirname, 'views'));
+
+//not good for production but good enough for development and mantaining session
+//data
+//app.use(express.cookieParser());
+app.use(session({
+  secret: 'cat',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false
+  }
+}));
+app.use(bodyParser());
+app.use(morgan('dev'));
+
+//making my own middleware to expose session information
+//to the view for login data
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+})
+
+app.use(express.static(path.join(__dirname, 'asset')));
+
 mongoose.model('User', graduateUserSchema);
 
 mongoose.model('Book', favBookSchema);
@@ -72,43 +103,24 @@ app.get('/', function(req, res) {
   });
 })
 
+app.post('/test', function(req, res) {
+    console.log('redwedding');
+});
+
 //create new account
-app.post('/signup', multipartMiddleware, function(req, res) {
+app.post('/api/signup', multipartMiddleware, function(req, res) {
     console.log('hitsignup route');
     console.log(req.params);
+    console.log(req.body);
     var email = req.body.email;
     var username = req.body.username;
-  var password = req.body.password;
+    var password = req.body.password;
+    res.send('got a post request');
 
-  if (!(email && password)) {
-    return invalid();
-  }
+});
 
-  User.findById(email, function(err, user) {
-    if (err) return next(err);
-
-    var user = {
-      id: email
-    };
-      
-    user.salt = bytes.toString('utf8');
-    user.hash = hash(password, user.salt);
-
-    User.create(graduateUserSchema, function(err, newUser) {
-      if (err) {
-        if (err instanceof mongoose.Error.ValidationError) {
-          return invalid();
-        }
-        return next(err);
-      }
-
-      //user created
-      req.session.isLoggedIn = true;
-      req.session.user = email;
-      console.log('createduser %s', email);
-      return res.redirect('/');
-    })
-  })
+app.get('/signup', function (req, res) {
+    
 })
 
 app.post('/login', function(req, res) {
@@ -142,34 +154,7 @@ app.post('/login', function(req, res) {
 })
 
 
-// view engine setup
-app.engine('.hbs', exphbs({
-  extname: '.hbs'
-}));
-app.set('view engine', '.hbs');
-app.set('views', path.join(__dirname, 'views'));
 
-//not good for production but good enough for development and mantaining session
-//data
-//app.use(express.cookieParser());
-app.use(session({
-  secret: 'cat',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false
-  }
-}));
-app.use(bodyParser());
-
-//making my own middleware to expose session information
-//to the view for login data
-app.use(function(req, res, next) {
-  res.locals.session = req.session;
-  next();
-})
-
-app.use(express.static(path.join(__dirname, 'asset')));
 
 var server = app.listen(3000, function() {
   var host = server.address().address;

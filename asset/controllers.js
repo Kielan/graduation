@@ -23,7 +23,7 @@ ctrls.controller('SignupCtrl', function ($scope, $http) {
 	
 	console.log(form);
 	console.log(form.name);
-	return $http.post("http://localhost:3000/signup", {
+	return $http.post("http://localhost:3000/api/signup", {
 	    name: form.name,
 	    username: form.username,
 	    email: form.email,
