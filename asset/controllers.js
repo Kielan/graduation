@@ -19,14 +19,15 @@ ctrls.controller('LoginCtrl', function ($scope, $http, Kenbasket) {
 });
 
 ctrls.controller('SignupCtrl', function ($scope, $http) {
-    $scope.SignUp = function(name, username, email, password) {
+    $scope.SignUp = function(form) {
 	
-	console.log('help');
+	console.log(form);
+	console.log(form.name);
 	return $http.post("http://localhost:3000/signup", {
-	    name: name,
-	    username: username,
-	    email: email,
-	    password: password
+	    name: form.name,
+	    username: form.username,
+	    email: form.email,
+	    password: form.password
 	});
 	
     }
