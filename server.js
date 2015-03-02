@@ -130,15 +130,19 @@ app.post('/api/signup', multipartMiddleware, function(req, res) {
             if (err) return next(err);
 
             var user = {
-                _id: email
+                _id: email,
+		email: email,
+		username: username,
+		password: password
             };
+	    
             user.salt = bytes.toString('utf8');
             user.hash = hash(password, user.salt);
 
             User.create(user, function(err, newUser) {
                 if (err) {
                     if (err instanceof mongoose.Error.ValidationError) {
-			console.log('mongoose validation error');
+			console.log(err);
                         return invalid();	
                     }
                     return next(err);
