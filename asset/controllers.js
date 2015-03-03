@@ -42,3 +42,9 @@ ctrls.controller('SignupCtrl', function ($scope, $http) {
 	});
     }
 })
+
+ctrls.controller('NavCtrl', function($scope, $http) {
+    $scope.isLogged = true;
+    $scope.currentAccount = "Jerry";
+    
+})

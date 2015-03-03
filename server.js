@@ -2,6 +2,7 @@
 //module dependencies
 var express = require('express');
 var exphbs = require('express-handlebars');
+var ejs = require('ejs');
 var crypto = require('crypto');
 var path = require('path');
 var morgan = require('morgan');
@@ -20,10 +21,8 @@ mongoose.connect('mongodb://localhost/thegraduate');
 
 
 // view engine setup
-app.engine('.hbs', exphbs({
-    extname: '.hbs'
-}));
-app.set('view engine', '.hbs');
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', '.html');
 app.set('views', path.join(__dirname, 'views'));
 
 //not good for production but good enough for development and mantaining session

@@ -99,7 +99,7 @@ app.post('/api/signup', multipartMiddleware, function(req, res) {
 });
 
 app.get('/signup', function(req, res) {
-
+    return res.redirect('/');
 })
 
 app.post('/api/login', multipartMiddleware, function(req, res) {
