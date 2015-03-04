@@ -1,4 +1,5 @@
 var multipart = require('connect-multiparty');
+var sessions = require('client-sessions');
 var mongoose = require('mongoose');
 var User = require('../models/userModel.js');
 var Book = require('../models/bookModel.js');
@@ -61,7 +62,8 @@ app.post('/api/signup', multipartMiddleware, function(req, res) {
         if (err) return next(err);
 
         if (user) {
-            return res.render('signup.html', {
+	    console.log('property user taken')
+            return res.render('../asset/signup.html', {
                 exists: true
             });
         }
@@ -89,8 +91,11 @@ app.post('/api/signup', multipartMiddleware, function(req, res) {
                 }
 
                 // user created successfully
-                req.session.isLoggedIn = true;
-                req.session.user = email;
+		//now set session properly
+		    req.sessions.user = user;
+		    req.user = user;
+		    res.locals.user = user;
+
                 console.log('created user: %s', email);
                 return res.redirect('/');
             })
@@ -108,6 +113,7 @@ app.post('/api/login', multipartMiddleware, function(req, res) {
     var password = req.body.password;
 
     if (!(email && password)) {
+	console.log('no email or maybe password');
         return invalid();
     }
 
@@ -118,6 +124,7 @@ app.post('/api/login', multipartMiddleware, function(req, res) {
         if (err) return next(err);
 
         if (!user) {
+	    console.log('no user info yet you should signup');
             return invalid();
         }
 
@@ -126,8 +133,8 @@ app.post('/api/login', multipartMiddleware, function(req, res) {
             return invalid();
         }
 
-        req.session.isLoggedIn = true;
-        req.session.user = email;
+        req.sessions.isLoggedIn = true;
+        req.sessions.user = email;
         res.redirect('/');
     })
 })

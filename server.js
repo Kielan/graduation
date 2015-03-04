@@ -1,13 +1,13 @@
 'use strict';
 //module dependencies
 var express = require('express');
-var exphbs = require('express-handlebars');
 var ejs = require('ejs');
 var crypto = require('crypto');
 var path = require('path');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
-var session = require('express-session');
+var sessions = require('client-sessions');
+var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var routes = require('./asset/routes/routes.js');
 var app = express();
@@ -27,24 +27,21 @@ app.set('views', path.join(__dirname, 'views'));
 
 //not good for production but good enough for development and mantaining session
 //data
-//app.use(express.cookieParser());
-app.use(session({
+app.use(cookieParser());
+app.use(sessions({
+    cookieName: 'sessions',
+    duration: 30 * 60 * 1000,
+    activeDuration: 10 * 60 * 1000,
     secret: 'cat',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false
+        secure: false,
+	httpOnly: false
     }
 }));
 app.use(bodyParser());
 app.use(morgan('dev'));
-
-//making my own middleware to expose session information
-//to the view for login data
-app.use(function(req, res, next) {
-    res.locals.session = req.session;
-    next();
-})
 
 app.use(express.static(path.join(__dirname, 'asset')));
 

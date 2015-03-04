@@ -1,6 +1,6 @@
 'use strict';
 
-var ctrls = angular.module('myApp.controllers', []);
+var ctrls = angular.module('myApp.controllers', ['ngCookies']);
 
 ctrls.controller('BookCtrl', function ($scope, $http) {
     
@@ -43,8 +43,19 @@ ctrls.controller('SignupCtrl', function ($scope, $http) {
     }
 })
 
-ctrls.controller('NavCtrl', function($scope, $http) {
+ctrls.controller('NavCtrl', function($scope, $http, $cookieStore) {
     $scope.isLogged = true;
-    $scope.currentAccount = "Jerry";
+    console.log($cookieStore);
+   // $scope.currentAccount;
+
+
     
+   // if ($scope.currentAccount == undefined) {
+//	$scope.currentAccount = "Jerry";
+ //   }
+   // else {
+//	$scope.currentAccount = $cookieStore.get(user);
+//	    console.log($cookieStore.get(user));
+   // }
+	
 })
