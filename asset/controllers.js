@@ -43,10 +43,12 @@ ctrls.controller('SignupCtrl', function ($scope, $http) {
     }
 })
 
-ctrls.controller('NavCtrl', function($scope, $http, $cookieStore) {
+ctrls.controller('NavCtrl', function($rootScope, $scope, $http, $cookieStore, $cookies) {
     $scope.isLogged = true;
-    console.log($cookieStore);
-   // $scope.currentAccount;
+ //   $rootScope.user = user;
+//    var curAccount = $cookies.get('sessions');
+//    console.log(curAccount);
+//    $scope.currentAccount = curAccount;
 
 
     
@@ -56,6 +58,13 @@ ctrls.controller('NavCtrl', function($scope, $http, $cookieStore) {
    // else {
 //	$scope.currentAccount = $cookieStore.get(user);
 //	    console.log($cookieStore.get(user));
+    // }
+
+    
+
+	
+
+	
    // }
 	
 })

@@ -16,6 +16,9 @@ var favBookSchema = mongoose.Schema({
         type: String,
         required: true,
         lowercase: true
+    },
+    edited: {
+	type: Boolean
     }
 });
 

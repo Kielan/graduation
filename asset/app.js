@@ -16,3 +16,15 @@ app.config(["$routeProvider", function ($routeProvider) {
     .when("/", {controller: "HomeCtrl", templateUrl: "home.html"})
 	.otherwise({redirectTo: "/"})
 }]);
+
+app.factory('Auth', function($http, $cookieStore) {
+
+    var accessLevels = routingConfig.accessLevels;
+    var userRoles = routingConfig.userRoles;
+    var currentUser = $cookieStore.get('user' || { username: '', role: userRoles.public })
+
+    function changeUser(user) {
+	angular.extend(currentUser, user);
+    }
+    
+})

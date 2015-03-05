@@ -25,6 +25,14 @@ var graduateUserSchema = mongoose.Schema({
     created: {
         type: Date,
         default: Date.now
+    },
+    permissions: {
+	view: {
+	    type: Boolean
+	},
+	trash: {
+	    type: Boolean
+	}
     }
 });
 

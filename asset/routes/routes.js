@@ -13,7 +13,8 @@ module.exports = function (app) {
  
 app.get('/', function(req, res) {
     res.render('index', {
-        title: 'GraduateLogin'
+        title: 'GraduateLogin',
+//	user: req.sessions.user.username
     });
 })
 
@@ -22,6 +23,7 @@ app.post('/api/newbook', multipartMiddleware, function(req, res) {
     var title = req.body.title;
     var author = req.body.author;
     var quote = req.body.quote;
+    //var creator = 
 
     var book = {
 	title: title,
@@ -94,7 +96,10 @@ app.post('/api/signup', multipartMiddleware, function(req, res) {
 		//now set session properly
 		    req.sessions.user = user;
 		    req.user = user;
-		    res.locals.user = user;
+		res.locals.user = user;
+		console.log(req.sessions.user);
+		console.log(req.user);
+		console.log(res.locals.user);
 
                 console.log('created user: %s', email);
                 return res.redirect('/');
@@ -138,4 +143,14 @@ app.post('/api/login', multipartMiddleware, function(req, res) {
         res.redirect('/');
     })
 })
+//place ensureAuthorized inside router requests before callback
+    function ensureAuthorized(req, res, next) {
+	var role;
+	if(!req.user) role = userRoles.public;
+	else          role = req.user.role;
+	var accessLevel = _.findWhere(routes, { path: req.route.path, httpMethod: req.route.stack[0].method.toUpperCase() }).accessLevel || accessLevels.public;
+
+	if(!(accessLevel.bitMask & role.bitMask)) return res.send(403);
+	return next();
+}
 }//module bracket
